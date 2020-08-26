@@ -17,5 +17,14 @@ class Tests:
 
         print("Album search test passed.")
 
+    def test_download_album(self):
+        try:
+            self.controller.download_youtube_video("Yes", "Close To The Edge")
+            print("Album downloading test passed.")
+        except Exception as e:
+            print(e)
+            assert(False)
+
     def run_all_tests(self):
         self.test_search_album()
+        self.test_download_album()
