@@ -1,2 +1,6 @@
+from tests import Tests
+
 def main():
-    pass
+    Tests()
+
+main()
