@@ -35,8 +35,16 @@ class Tests:
         assert(album_link == "https://www.discogs.com/Asylum-Party-Borderline/master/11882")
         print("Album link scraping test passed.")
 
+    def test_get_album_tracklist(self):
+        link = self.controller.get_album_link_from_discogs("King Crimson", "Red")
+        (song_titles, song_durations) = self.controller.get_album_tracklist(link)
+        assert(song_titles == ['Red', 'Fallen Angel', 'One More Red Nightmare', 'Providence', 'Starless'])
+        assert(song_durations == ['6:20', '6:00', '7:07', '8:08', '12:18'])
+        print("Album tracklist extraction test passed.")
+
     def run_all_tests(self):
         self.test_search_album()
-        self.test_download_album()
+        #self.test_download_album()
         self.test_create_search_query()
         self.test_get_album_link_from_discogs()
+        self.test_get_album_tracklist()

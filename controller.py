@@ -56,14 +56,21 @@ class Controller:
 
         return "https://www.discogs.com" + links[0].attrs["href"]
 
-    def get_album_details(self):
-        pass
+    def get_album_tracklist(self, album_link):
+        result = requests.get(album_link)
+        tracklist_page = result.content
+        soup = BeautifulSoup(tracklist_page, "lxml")
+        tracklist_span_titles = soup.find_all("span", "tracklist_track_title")
+        tracklist_durations = soup.find_all("td", "tracklist_track_duration")
+        song_titles = list(map(lambda x: x.getText(), tracklist_span_titles))
+        song_durations = list(map(lambda x: x.find("span").getText(), tracklist_durations))
+        return (song_titles, song_durations)
 
     def split_audio_in_tracks(self):
         pass
 
-    # search album on Youtube
-    # download the album in mp4 format
-    # convert mp4 to mp3
-    # scrape track details from Discogs or Wikipedia
+    # search album on Youtube                                X
+    # download the album in mp4 format                       X
+    # convert mp4 to mp3                                     X
+    # scrape track details from Discogs or Wikipedia         X
     # cut the mp3 at the right places
