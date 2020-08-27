@@ -46,7 +46,8 @@ class Tests:
     def test_download_into_directory(self):
         self.controller.download_into_directory("Warsaw", "Joy Division")
         os.chdir("./downloads")
-        #assert("" in os.listdir())
+        assert("Warsaw - Joy Division" in os.listdir())
+        print("Directory path download test passed.")
 
     def run_all_tests(self):
         self.test_search_album()
