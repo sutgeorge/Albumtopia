@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from youtube_search import YoutubeSearch
 from youtube_dl import YoutubeDL
-import re
+import re, os
 
 class Controller:
     def __init__(self):
@@ -28,15 +28,18 @@ class Controller:
         filename = band_name + " - " + album_name + ".mp3"
         options = {
             'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': filename,
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '320',
-            }]
-        }
+            'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}]}
 
         with YoutubeDL(options) as ydl:
             ydl.download([video_info['webpage_url']])
+
+    def download_into_directory(self, band_name, album_title):
+        os.chdir("./downloads")
+        new_directory_name = "./" + band_name + " - " + album_title + "/"
+        os.mkdir(new_directory_name)
+        os.chdir(new_directory_name)
+        self.download_youtube_video(band_name, album_title)
+        os.chdir("../../")
 
     def create_search_query(self, band_name, album_title):
         search_term = (band_name + " " + album_title).strip().lower()

@@ -1,4 +1,5 @@
 from controller import Controller
+import os
 
 class Tests:
     def __init__(self):
@@ -42,9 +43,15 @@ class Tests:
         assert(song_durations == ['6:20', '6:00', '7:07', '8:08', '12:18'])
         print("Album tracklist extraction test passed.")
 
+    def test_download_into_directory(self):
+        self.controller.download_into_directory("Warsaw", "Joy Division")
+        os.chdir("./downloads")
+        #assert("" in os.listdir())
+
     def run_all_tests(self):
         self.test_search_album()
         #self.test_download_album()
         self.test_create_search_query()
         self.test_get_album_link_from_discogs()
         self.test_get_album_tracklist()
+        self.test_download_into_directory()
