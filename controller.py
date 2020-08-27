@@ -69,6 +69,18 @@ class Controller:
         song_durations = list(map(lambda x: x.find("span").getText(), tracklist_durations))
         return (song_titles, song_durations)
 
+    def convert_timestamp_string_to_ints(self, timestamp):
+        timestamp_dictionary = {}
+        time_units = list(map(lambda x: int(x), timestamp.split(":")))
+        if len(time_units) == 3:
+            timestamp_dictionary["hours"] = time_units[0]
+            timestamp_dictionary["minutes"] = time_units[1]
+            timestamp_dictionary["seconds"] = time_units[2]
+        elif len(time_units) == 2:
+            timestamp_dictionary["minutes"] = time_units[0]
+            timestamp_dictionary["seconds"] = time_units[1]
+        return timestamp_dictionary
+
     def split_audio_in_tracks(self):
         pass
 

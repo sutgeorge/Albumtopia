@@ -49,10 +49,16 @@ class Tests:
         assert("Warsaw - Joy Division" in os.listdir())
         print("Directory path download test passed.")
 
+    def test_string_timestamp_conversion_to_ints(self):
+        timestamp = self.controller.convert_timestamp_string_to_ints("9:52")
+        assert(timestamp["minutes"] == 9 and timestamp["seconds"] == 52)
+        print("String timestamp conversion test passed.")
+
     def run_all_tests(self):
         self.test_search_album()
         #self.test_download_album()
         self.test_create_search_query()
         self.test_get_album_link_from_discogs()
         self.test_get_album_tracklist()
-        self.test_download_into_directory()
+        #self.test_download_into_directory()
+        self.test_string_timestamp_conversion_to_ints()
