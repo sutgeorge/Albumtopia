@@ -1,5 +1,5 @@
 from controller import Controller
-import os
+import os, shutil
 
 class Tests:
     def __init__(self):
@@ -20,7 +20,14 @@ class Tests:
 
     def test_download_album(self):
         try:
+            if not os.path.exists("./downloads"):
+                os.mkdir("downloads")
+            os.chdir("./downloads")
             self.controller.download_youtube_video("Nails", "Unsilent Death")
+            assert(os.listdir() == ["Nails_-_Unsilent_Death.mp3"])
+            os.remove("Nails_-_Unsilent_Death.mp3")
+            os.chdir("..")
+            shutil.rmtree("./downloads")
             print("Album downloading test passed.")
         except Exception as e:
             print(e)

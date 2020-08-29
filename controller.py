@@ -35,6 +35,8 @@ class Controller:
             ydl.download([video_info['webpage_url']])
 
     def download_into_directory(self, band_name, album_title):
+        if not os.path.exists("./downloads"):
+            os.mkdir("downloads")
         os.chdir("./downloads")
         self.new_directory_name = ("./" + band_name + " - " + album_title + "/").replace(" ", "_")
         if not os.path.exists(self.new_directory_name):
