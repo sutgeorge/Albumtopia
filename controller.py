@@ -104,6 +104,7 @@ class Controller:
             song_title = (song_titles[song_index] + ".mp3").replace(" ", "_")
             os.system("ffmpeg -t {} -ss {} -i {} {}".format(song_duration_in_seconds, start_time, filename, song_title))
 
+        os.remove(filename)
         os.chdir("../../")
 
     # search album on Youtube                                X
