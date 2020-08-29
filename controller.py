@@ -51,7 +51,7 @@ class Controller:
         request_url = "https://www.discogs.com/search/?q=" + search_term + "&type=all"
         return request_url
 
-    def get_album_link_from_discogs(self, band_name, album_title):
+    def get_album_links_from_discogs(self, band_name, album_title):
         search_query = self.create_search_query(band_name, album_title)
         result = requests.get(search_query)
         page_source = result.content
@@ -61,7 +61,13 @@ class Controller:
             print("No search found!")
             return 404
 
-        return "https://www.discogs.com" + links[0].attrs["href"]
+        valid_links = []
+
+        for index in range(0, len(links)):
+            if album_title.strip().lower() in links[index].attrs["href"].lower():
+                valid_links.append("https://www.discogs.com" + links[index].attrs["href"])
+
+        return valid_links
 
     def get_album_tracklist(self, album_link):
         result = requests.get(album_link)
@@ -90,7 +96,8 @@ class Controller:
         self.download_into_directory(band_name, album_title)
         os.chdir("./downloads/" + self.new_directory_name[2:])
         total_time = datetime.timedelta(minutes=0, seconds=0)
-        album_link = self.get_album_link_from_discogs(band_name, album_title)
+        album_links = self.get_album_links_from_discogs(band_name, album_title)
+        album_link = album_links[0]
         (song_titles, song_durations) = self.get_album_tracklist(album_link)
 
         for song_index in range(0, len(song_titles)):

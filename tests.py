@@ -20,8 +20,9 @@ class Tests:
 
     def test_download_album(self):
         try:
-            if not os.path.exists("./downloads"):
-                os.mkdir("downloads")
+            if os.path.exists("./downloads"):
+                shutil.rmtree("./downloads")
+            os.mkdir("downloads")
             os.chdir("./downloads")
             self.controller.download_youtube_video("Nails", "Unsilent Death")
             assert(os.listdir() == ["Nails_-_Unsilent_Death.mp3"])
@@ -38,14 +39,14 @@ class Tests:
         assert(search_query == "https://www.discogs.com/search/?q=rush+moving+pictures&type=all")
         print("Search query creation test passed.")
 
-    def test_get_album_link_from_discogs(self):
-        album_link = self.controller.get_album_link_from_discogs(" Asylum party  ", "borderline  ")
-        assert(album_link == "https://www.discogs.com/Asylum-Party-Borderline/master/11882")
+    def test_get_album_links_from_discogs(self):
+        album_links = self.controller.get_album_links_from_discogs(" Asylum party  ", "borderline  ")
+        assert(album_links[0] == "https://www.discogs.com/Asylum-Party-Borderline/master/11882")
         print("Album link scraping test passed.")
 
     def test_get_album_tracklist(self):
-        link = self.controller.get_album_link_from_discogs("King Crimson", "Red")
-        (song_titles, song_durations) = self.controller.get_album_tracklist(link)
+        links = self.controller.get_album_links_from_discogs("King Crimson", "Red")
+        (song_titles, song_durations) = self.controller.get_album_tracklist(links[0])
         assert(song_titles == ['Red', 'Fallen Angel', 'One More Red Nightmare', 'Providence', 'Starless'])
         assert(song_durations == ['6:20', '6:00', '7:07', '8:08', '12:18'])
         print("Album tracklist extraction test passed.")
@@ -76,7 +77,7 @@ class Tests:
         self.test_search_album()
         self.test_download_album()
         self.test_create_search_query()
-        self.test_get_album_link_from_discogs()
+        self.test_get_album_links_from_discogs()
         self.test_get_album_tracklist()
         self.test_download_into_directory()
         self.test_string_timestamp_conversion_to_ints()
