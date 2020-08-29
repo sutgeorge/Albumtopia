@@ -91,33 +91,41 @@ class Controller:
             timestamp_dictionary["seconds"] = time_units[1]
         return timestamp_dictionary
 
+    def check_tracklength_validity(self, song_durations):
+        for song_duration in song_durations:
+            if len(song_duration) > 0:
+                return True
+        return False
+
     def split_audio_in_tracks(self, band_name, album_title):
         filename = (band_name + "_-_" + album_title + ".mp3").replace(" ", "_")
         self.download_into_directory(band_name, album_title)
         os.chdir("./downloads/" + self.new_directory_name[2:])
         total_time = datetime.timedelta(minutes=0, seconds=0)
+        invalid_song_durations = True
         album_links = self.get_album_links_from_discogs(band_name, album_title)
-        album_link = album_links[0]
-        (song_titles, song_durations) = self.get_album_tracklist(album_link)
 
-        for song_index in range(0, len(song_titles)):
-            song_length_tokens = song_durations[song_index].split(":")
-            song_length_tokens = list(map(lambda x: int(x), song_length_tokens))
-            song_duration_in_seconds = song_length_tokens[0] * 60 + song_length_tokens[1]
+        while invalid_song_durations:
+            album_link = album_links[0]
+            (song_titles, song_durations) = self.get_album_tracklist(album_link)
+            if self.check_tracklength_validity(song_durations) == False:
+                del album_links[0]
+                continue
 
-            timestamp = self.convert_timestamp_string_to_ints(song_durations[song_index])
-            current_duration = datetime.timedelta(minutes=timestamp["minutes"], seconds=timestamp["seconds"])
-            start_time = total_time.total_seconds()
-            total_time += current_duration
+            print(song_titles)
+            invalid_song_durations = False
+            for song_index in range(0, len(song_titles)):
+                song_length_tokens = song_durations[song_index].split(":")
+                song_length_tokens = list(map(lambda x: int(x), song_length_tokens))
+                song_duration_in_seconds = song_length_tokens[0] * 60 + song_length_tokens[1]
 
-            song_title = (song_titles[song_index] + ".mp3").replace(" ", "_")
-            os.system("ffmpeg -t {} -ss {} -i {} {}".format(song_duration_in_seconds, start_time, filename, song_title))
+                timestamp = self.convert_timestamp_string_to_ints(song_durations[song_index])
+                current_duration = datetime.timedelta(minutes=timestamp["minutes"], seconds=timestamp["seconds"])
+                start_time = total_time.total_seconds()
+                total_time += current_duration
+
+                song_title = (song_titles[song_index] + ".mp3").replace(" ", "_").replace("'", "_")
+                os.system("ffmpeg -t {} -ss {} -i {} {}".format(song_duration_in_seconds, start_time, filename, song_title))
 
         os.remove(filename)
         os.chdir("../../")
-
-    # search album on Youtube                                X
-    # download the album in mp4 format                       X
-    # convert mp4 to mp3                                     X
-    # scrape track details from Discogs or Wikipedia         X
-    # cut the mp3 at the right places

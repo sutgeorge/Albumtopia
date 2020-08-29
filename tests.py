@@ -65,15 +65,18 @@ class Tests:
 
     def test_split_audio_in_tracks__average_case(self):
         self.controller.split_audio_in_tracks("Pink Floyd", "Meddle")
-        assert(os.listdir("./downloads/Pink_Floyd_-_Meddle") == ['Seamus.mp3', 'A_Pillow_Of_Winds.mp3', 'San_Tropez.mp3', 'Fearless.mp3', 'Echoes.mp3', 'One_Of_These_Days.mp3'])
-        print("Audio splitting test passed.")
+        assert(set(os.listdir("./downloads/Pink_Floyd_-_Meddle")) == set(['Seamus.mp3', 'A_Pillow_Of_Winds.mp3', 'San_Tropez.mp3', 'Fearless.mp3', 'Echoes.mp3', 'One_Of_These_Days.mp3']))
+        print("Audio splitting test (average case) passed.")
 
     def test_split_audio_in_tracks__no_song_lengths_in_the_first_link(self):
+        shutil.rmtree("./downloads")
+        os.mkdir("./downloads")
         self.controller.split_audio_in_tracks("Jethro Tull", "Aqualung")
-        assert(os.listdir("./downloads/Jethro_Tull_-_Aqualung") == ['Aqualung.mp3', 'Cross-Eyed_Mary.mp3', 'Cheap_Day_Return.mp3', 'Mother_Goose.mp3', "Wond'ring_Aloud.mp3", 'Up_To_Me.mp3', "My_God.mp3", "Hymn_43.mp3", "Slipstream.mp3", "Locomotive_Breath.mp3", "Wind-Up.mp3"])
-        print("Audio splitting test passed.")
+        assert(set(os.listdir("./downloads/Jethro_Tull_-_Aqualung")) == set(['Aqualung.mp3', 'Cross-Eyed_Mary.mp3', 'Cheap_Day_Return.mp3', 'Mother_Goose.mp3', "Wond_ring_Aloud.mp3", 'Up_To_Me.mp3', "My_God.mp3", "Hymn_43.mp3", "Slipstream.mp3", "Locomotive_Breath.mp3", "Wind-Up.mp3"]))
+        print("Audio splitting test (no song lengths in link) passed.")
 
     def run_all_tests(self):
+        """
         self.test_search_album()
         self.test_download_album()
         self.test_create_search_query()
@@ -82,4 +85,5 @@ class Tests:
         self.test_download_into_directory()
         self.test_string_timestamp_conversion_to_ints()
         self.test_split_audio_in_tracks__average_case()
-        #self.test_split_audio_in_tracks__no_song_lengths_in_the_first_link()
+        """
+        self.test_split_audio_in_tracks__no_song_lengths_in_the_first_link()
