@@ -1,4 +1,5 @@
 import requests
+import datetime
 from bs4 import BeautifulSoup
 from youtube_search import YoutubeSearch
 from youtube_dl import YoutubeDL
@@ -25,7 +26,7 @@ class Controller:
         results = self.search_album(band_name, album_name)
         video_url = "https://www.youtube.com" + results[0]['url_suffix']
         video_info = YoutubeDL().extract_info(url=video_url, download=False)
-        filename = band_name + " - " + album_name + ".mp3"
+        filename = (band_name + " - " + album_name + ".mp3").replace(" ", "_")
         options = {
             'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': filename,
             'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}]}
@@ -35,9 +36,10 @@ class Controller:
 
     def download_into_directory(self, band_name, album_title):
         os.chdir("./downloads")
-        new_directory_name = "./" + band_name + " - " + album_title + "/"
-        os.mkdir(new_directory_name)
-        os.chdir(new_directory_name)
+        self.new_directory_name = ("./" + band_name + " - " + album_title + "/").replace(" ", "_")
+        if not os.path.exists(self.new_directory_name):
+            os.mkdir(self.new_directory_name)
+        os.chdir(self.new_directory_name)
         self.download_youtube_video(band_name, album_title)
         os.chdir("../../")
 
@@ -81,8 +83,28 @@ class Controller:
             timestamp_dictionary["seconds"] = time_units[1]
         return timestamp_dictionary
 
-    def split_audio_in_tracks(self):
-        pass
+    def split_audio_in_tracks(self, band_name, album_title):
+        filename = (band_name + "_-_" + album_title + ".mp3").replace(" ", "_")
+        self.download_into_directory(band_name, album_title)
+        os.chdir("./downloads/" + self.new_directory_name[2:])
+        total_time = datetime.timedelta(minutes=0, seconds=0)
+        album_link = self.get_album_link_from_discogs(band_name, album_title)
+        (song_titles, song_durations) = self.get_album_tracklist(album_link)
+
+        for song_index in range(0, len(song_titles)):
+            song_length_tokens = song_durations[song_index].split(":")
+            song_length_tokens = list(map(lambda x: int(x), song_length_tokens))
+            song_duration_in_seconds = song_length_tokens[0] * 60 + song_length_tokens[1]
+
+            timestamp = self.convert_timestamp_string_to_ints(song_durations[song_index])
+            current_duration = datetime.timedelta(minutes=timestamp["minutes"], seconds=timestamp["seconds"])
+            start_time = total_time.total_seconds()
+            total_time += current_duration
+
+            song_title = (song_titles[song_index] + ".mp3").replace(" ", "_")
+            os.system("ffmpeg -t {} -ss {} -i {} {}".format(song_duration_in_seconds, start_time, filename, song_title))
+
+        os.chdir("../../")
 
     # search album on Youtube                                X
     # download the album in mp4 format                       X
