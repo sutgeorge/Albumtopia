@@ -104,7 +104,10 @@ class Controller:
         return False
 
     def sanitize_filename(self, filename):
-        filename = re.sub("[ (),;:\"\'&]", "_", filename)
+        characters = [' ', '(', ')', ',', ';', ':', '"', '\'', '&', '.']
+        for char in characters:
+            if char in filename:
+                filename = filename.replace(char, "_")
         filename += ".mp3"
         return filename
 
