@@ -5,7 +5,9 @@ A simple Python program which downloads a full album from Youtube and scrapes al
 - [X] Add automatic Youtube download
 - [X] Extract song lengths from discogs.com
 - [X] Split mp3 album properly in separate tracks
-- [X] Validate discogs.com links to extract correct song lengths 
+- [X] Validate discogs.com links to extract correct song lengths
 - [ ] Add metadata to each track
 - [ ] Create a simple console UI
+- [ ] Modify track length based on the bitrate of the album's mp3
+
 

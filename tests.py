@@ -75,8 +75,14 @@ class Tests:
         assert(set(os.listdir("./downloads/Jethro_Tull_-_Aqualung")) == set(['Aqualung.mp3', 'Cross-Eyed_Mary.mp3', 'Cheap_Day_Return.mp3', 'Mother_Goose.mp3', "Wond_ring_Aloud.mp3", 'Up_To_Me.mp3', "My_God.mp3", "Hymn_43.mp3", "Slipstream.mp3", "Locomotive_Breath.mp3", "Wind-Up.mp3"]))
         print("Audio splitting test (no song lengths in link) passed.")
 
+    def test_split_audio_in_tracks__validate_based_on_tokens(self):
+        shutil.rmtree("./downloads")
+        os.mkdir("./downloads")
+        self.controller.split_audio_in_tracks("Drowning The Light", "Oceans Of Eternity")
+        assert(set(os.listdir("./downloads/Drowning_The_Light_-_Oceans_Of_Eternity")) == set(['Oceans_Of_Eternity.mp3', 'Oppression___Tyranny.mp3', 'The_Key_Still_Not_Found.mp3', 'As_The_Shadows_At_Dusk_Reach_Our_Enemies_Throats.mp3', 'The_Lunatic_Tide.mp3', 'The_Poison_Kiss.mp3', 'The_Runes_Are_Thrown___The_Bones_Are_Spread__A_Hymn_To_The_Apocalypse_.mp3', 'Drifting_Away_In_A_Sea_Of_Sorrow__Part_II_.mp3', 'The_Cataclysmic_Cycle_Of_Renewal.mp3']))
+        print("Audio splitting test 3 (token validation) passed.")
+
     def run_all_tests(self):
-        """
         self.test_search_album()
         self.test_download_album()
         self.test_create_search_query()
@@ -85,5 +91,5 @@ class Tests:
         self.test_download_into_directory()
         self.test_string_timestamp_conversion_to_ints()
         self.test_split_audio_in_tracks__average_case()
-        """
         self.test_split_audio_in_tracks__no_song_lengths_in_the_first_link()
+        self.test_split_audio_in_tracks__validate_based_on_tokens()

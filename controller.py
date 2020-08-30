@@ -62,9 +62,15 @@ class Controller:
             return 404
 
         valid_links = []
-
         for index in range(0, len(links)):
-            if album_title.strip().lower() in links[index].attrs["href"].lower():
+            tokens = album_title.strip().lower().split(" ")
+            valid = True
+            for token in tokens:
+                if token not in links[index].attrs["href"].lower():
+                    valid = False
+                    break
+
+            if valid:
                 valid_links.append("https://www.discogs.com" + links[index].attrs["href"])
 
         return valid_links
@@ -97,8 +103,14 @@ class Controller:
                 return True
         return False
 
+    def sanitize_filename(self, filename):
+        filename = re.sub("[ (),;:\"\'&]", "_", filename)
+        filename += ".mp3"
+        return filename
+
     def split_audio_in_tracks(self, band_name, album_title):
-        filename = (band_name + "_-_" + album_title + ".mp3").replace(" ", "_")
+        filename = band_name + "_-_" + album_title
+        filename = self.sanitize_filename(filename)
         self.download_into_directory(band_name, album_title)
         os.chdir("./downloads/" + self.new_directory_name[2:])
         total_time = datetime.timedelta(minutes=0, seconds=0)
@@ -112,7 +124,6 @@ class Controller:
                 del album_links[0]
                 continue
 
-            print(song_titles)
             invalid_song_durations = False
             for song_index in range(0, len(song_titles)):
                 song_length_tokens = song_durations[song_index].split(":")
@@ -124,7 +135,7 @@ class Controller:
                 start_time = total_time.total_seconds()
                 total_time += current_duration
 
-                song_title = (song_titles[song_index] + ".mp3").replace(" ", "_").replace("'", "_")
+                song_title = self.sanitize_filename(song_titles[song_index])
                 os.system("ffmpeg -t {} -ss {} -i {} {}".format(song_duration_in_seconds, start_time, filename, song_title))
 
         os.remove(filename)
