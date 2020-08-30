@@ -9,5 +9,4 @@ A simple Python program which downloads a full album from Youtube and scrapes al
 - [ ] Add metadata to each track
 - [ ] Create a simple console UI
 - [ ] Modify track length based on the bitrate of the album's mp3
-
-
+- [ ] Implement separate track downloading

@@ -141,5 +141,6 @@ class Controller:
                 song_title = self.sanitize_filename(song_titles[song_index])
                 os.system("ffmpeg -t {} -ss {} -i {} {}".format(song_duration_in_seconds, start_time, filename, song_title))
 
+        print("{}:{}".format(int(total_time.total_seconds() // 60), int(total_time.total_seconds() % 60)))
         os.remove(filename)
         os.chdir("../../")

@@ -3,11 +3,9 @@ from controller import Controller
 from console import Console
 
 def main():
-    Tests()
-    """
+    #Tests()
     controller = Controller()
     console = Console(controller)
     console.run()
-    """
 
 main()
