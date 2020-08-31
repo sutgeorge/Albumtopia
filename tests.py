@@ -89,6 +89,13 @@ class Tests:
         assert(set(os.listdir("./downloads/Drowning_The_Light_-_Catacombs_Of_Blood")) == set(['Autumn_Mourning.mp3', '___Such_Cruelty_Never_Rests.mp3', 'Eyes_Of_Onyx__Carrion_For_The_Worms_.mp3', 'As_Plague_Upon_The_Sheep__Poison_In_Redemption_.mp3', 'Entrance_To_Illumination.mp3', 'Fragmented___Unrealisable.mp3', 'This_Darkest_Hour.mp3', 'Requiem_Of_Honour___Glory.mp3', 'Pact_Of_The_Black_Templars.mp3', 'Burial_In_The_Rain.mp3', 'Torn_Away_By_The_Shadows.mp3']))
         print("Audio splitting test 4 (filename sanitization) passed.")
 
+    def test_split_audio_in_tracks__sanitize_tracklength(self):
+        shutil.rmtree("./downloads")
+        os.mkdir("./downloads")
+        self.controller.split_audio_in_tracks("Yes", "Close To The Edge")
+        assert(set(os.listdir("./downloads/Yes_-_Close_To_The_Edge")) == set(['And_You_And_I.mp3', 'Close_To_The_Edge.mp3', 'Siberian_Khatru.mp3']))
+        print("Audio splitting test 4 (tracklength sanitization) passed.")
+
     def run_all_tests(self):
         self.test_search_album()
         self.test_download_album()
@@ -101,3 +108,4 @@ class Tests:
         self.test_split_audio_in_tracks__no_song_lengths_in_the_first_link()
         self.test_split_audio_in_tracks__validate_based_on_tokens()
         self.test_split_audio_in_tracks__sanitize_dots()
+        self.test_split_audio_in_tracks__sanitize_tracklength()

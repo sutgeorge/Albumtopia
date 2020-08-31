@@ -12,12 +12,12 @@ class Controller:
     def search_album(self, band_name, album_name):
         band_name, album_name = band_name.lower(), album_name.lower()
         search_string = band_name + " " + album_name + " full album"
-        results = YoutubeSearch(search_string, max_results=10).to_dict()
+        results = YoutubeSearch(search_string, max_results=20).to_dict()
         valid_results = []
 
         for result in results:
             lowercase_result_title = result['title'].lower().replace("̲", "")
-            if band_name in lowercase_result_title and album_name in lowercase_result_title and "full album" in lowercase_result_title:
+            if band_name in lowercase_result_title and album_name in lowercase_result_title and "full" in lowercase_result_title:
                 valid_results.append(result)
 
         return valid_results
@@ -129,6 +129,9 @@ class Controller:
 
             invalid_song_durations = False
             for song_index in range(0, len(song_titles)):
+                if song_durations[song_index] == "":
+                    continue
+                song_durations[song_index] = song_durations[song_index].replace("(", "").replace(")", "")
                 song_length_tokens = song_durations[song_index].split(":")
                 song_length_tokens = list(map(lambda x: int(x), song_length_tokens))
                 song_duration_in_seconds = song_length_tokens[0] * 60 + song_length_tokens[1]
