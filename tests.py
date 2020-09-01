@@ -14,7 +14,7 @@ class Tests:
 
         for result in results:
             lowercase_album_title = result['title'].lower().replace("̲", "")
-            assert(band_name.lower() in lowercase_album_title and album_title.lower() in lowercase_album_title and "full album" in lowercase_album_title)
+            assert(band_name.lower() in lowercase_album_title and album_title.lower() in lowercase_album_title and "full" in lowercase_album_title)
 
         print("Album search test passed.")
 

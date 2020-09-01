@@ -52,6 +52,8 @@ class Controller:
         return request_url
 
     def get_album_links_from_discogs(self, band_name, album_title):
+        band_name = band_name.strip().lower()
+        album_title = album_title.strip().lower()
         search_query = self.create_search_query(band_name, album_title)
         result = requests.get(search_query)
         page_source = result.content
@@ -66,7 +68,7 @@ class Controller:
             tokens = album_title.strip().lower().split(" ")
             valid = True
             for token in tokens:
-                if token not in links[index].attrs["href"].lower():
+                if token not in links[index].attrs["href"].lower() and token not in str(links[index]).lower():
                     valid = False
                     break
 
