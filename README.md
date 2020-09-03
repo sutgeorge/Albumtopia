@@ -11,3 +11,6 @@ A simple Python program which downloads a full album from Youtube and scrapes al
 - [ ] Implement separate track downloading
 - [ ] Manually plugging a link instead of searching automatically 
 - [ ] Use rateyourmusic.com as a back-up tracklist source 
+
+## Current state
+![Demo](https://github.com/Calandrinon/Albumtopia/blob/master/res/demo.gif)
