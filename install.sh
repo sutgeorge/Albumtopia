@@ -9,4 +9,6 @@ pip install youtube-search
 pip3 install youtube-search
 pip install lxml
 pip3 install lxml
+pip install eyeD3
+pip3 install eyeD3
 sudo apt install ffmpeg

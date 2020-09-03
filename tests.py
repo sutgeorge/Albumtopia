@@ -1,5 +1,5 @@
 from controller import Controller
-import os, shutil
+import os, shutil, eyed3
 
 class Tests:
     def __init__(self):
@@ -103,6 +103,19 @@ class Tests:
         assert(set(os.listdir("./downloads/The_Smiths_-_The_Queen_Is_Dead")) == set(['Never_Had_No_One_Ever.mp3', 'Frankly__Mr__Shankly.mp3', 'The_Boy_With_The_Thorn_In_His_Side.mp3', 'There_Is_A_Light_That_Never_Goes_Out.mp3', 'Vicar_In_A_Tutu.mp3', 'Cemetry_Gates.mp3', 'Bigmouth_Strikes_Again.mp3', 'The_Queen_Is_Dead__Take_Me_Back_To_Dear_Old_Blighty__Medley__.mp3', 'Some_Girls_Are_Bigger_Than_Others.mp3', 'I_Know_It_s_Over.mp3']))
         print("Audio splitting test 5 (youtube title sanitization) passed.")
 
+    def test_add_tags_to_track(self):
+        shutil.rmtree("./downloads")
+        os.mkdir("./downloads")
+        self.controller.split_audio_in_tracks("Decomposed", "The Funeral Obsession")
+        os.chdir("./downloads/Decomposed_-_The_Funeral_Obsession")
+        song = eyed3.load("At_Rest.mp3")
+        assert(song.tag.artist == "Decomposed")
+        assert(song.tag.album == "The Funeral Obsession")
+        assert(song.tag.title == "At Rest")
+        assert(song.tag.track_num[0] == 1)
+        os.chdir("../../")
+        print("Automatic track tags test passed.")
+
     def run_all_tests(self):
         self.test_search_album()
         self.test_download_album()
@@ -117,3 +130,4 @@ class Tests:
         self.test_split_audio_in_tracks__sanitize_dots()
         self.test_split_audio_in_tracks__sanitize_tracklength()
         self.test_split_audio_in_tracks__sanitize_youtube_title()
+        self.test_add_tags_to_track()

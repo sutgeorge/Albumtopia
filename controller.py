@@ -3,11 +3,11 @@ import datetime
 from bs4 import BeautifulSoup
 from youtube_search import YoutubeSearch
 from youtube_dl import YoutubeDL
-import re, os
+import re, os, eyed3, sys, urllib
 
 class Controller:
     def __init__(self):
-        pass
+        self.album_link = ""
 
     def search_album(self, band_name, album_name):
         band_name, album_name = band_name.lower(), album_name.lower()
@@ -105,6 +105,33 @@ class Controller:
                 return True
         return False
 
+    def download_album_cover_art(self, band_name, album_title):
+        result = requests.get(self.album_link)
+        page_source = result.content
+        soup = BeautifulSoup(page_source, "lxml")
+        links = soup.find_all("img")
+        image_link = ""
+        for link in links:
+            if "album cover" in str(link):
+                image_link = link.attrs["src"]
+                break
+
+        self.path_to_image = (os.getcwd() + "/" + band_name + album_title).replace(" ", "_")
+        if sys.version[0] == '2':
+            urllib.urlretrieve(image_link, self.path_to_image)
+        elif sys.version[0] == '3':
+            urllib.request.urlretrieve(image_link, self.path_to_image)
+
+    def add_tags_to_track(self, path_to_track, band_name, album_title, song_title, track_num):
+        song = eyed3.load(path_to_track)
+        song.tag.artist = band_name
+        song.tag.album = album_title
+        song.tag.album_artist = band_name
+        song.tag.title = song_title
+        song.tag.track_num = track_num
+        song.tag.images.set(3, open(self.path_to_image, 'rb').read(), 'image/jpeg')
+        song.tag.save()
+
     def sanitize_filename(self, filename):
         characters = [' ', '(', ')', ',', ';', ':', '"', '\'', '&', '.']
         for char in characters:
@@ -129,6 +156,8 @@ class Controller:
                 del album_links[0]
                 continue
 
+            self.album_link = album_link
+            self.download_album_cover_art(band_name, album_title)
             invalid_song_durations = False
             for song_index in range(0, len(song_titles)):
                 if song_durations[song_index] == "":
@@ -145,6 +174,7 @@ class Controller:
 
                 song_title = self.sanitize_filename(song_titles[song_index])
                 os.system("ffmpeg -t {} -ss {} -i {} {}".format(song_duration_in_seconds, start_time, filename, song_title))
+                self.add_tags_to_track(song_title, band_name, album_title, song_titles[song_index], song_index + 1)
 
         print("{}:{}".format(int(total_time.total_seconds() // 60), int(total_time.total_seconds() % 60)))
         os.remove(filename)

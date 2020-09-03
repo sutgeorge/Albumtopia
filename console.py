@@ -6,7 +6,7 @@ class Console:
 
     def run(self):
         print("Welcome!")
-        band_name = input("Type the band name: ")
+        band_name = input("Type the artist name: ")
         album_title = input("Type the album title: ")
 
         self.controller.split_audio_in_tracks(band_name, album_title)
