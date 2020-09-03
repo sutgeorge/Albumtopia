@@ -133,7 +133,7 @@ class Controller:
         song.tag.save()
 
     def sanitize_filename(self, filename):
-        characters = [' ', '(', ')', ',', ';', ':', '"', '\'', '&', '.']
+        characters = [' ', '(', ')', ',', ';', ':', '"', '\'', '&', '.', '/']
         for char in characters:
             if char in filename:
                 filename = filename.replace(char, "_")
