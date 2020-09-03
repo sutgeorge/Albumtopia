@@ -96,6 +96,13 @@ class Tests:
         assert(set(os.listdir("./downloads/Yes_-_Close_To_The_Edge")) == set(['And_You_And_I.mp3', 'Close_To_The_Edge.mp3', 'Siberian_Khatru.mp3']))
         print("Audio splitting test 4 (tracklength sanitization) passed.")
 
+    def test_split_audio_in_tracks__sanitize_youtube_title(self):
+        shutil.rmtree("./downloads")
+        os.mkdir("./downloads")
+        self.controller.split_audio_in_tracks("The Smiths", "The Queen Is Dead")
+        assert(set(os.listdir("./downloads/The_Smiths_-_The_Queen_Is_Dead")) == set(['Never_Had_No_One_Ever.mp3', 'Frankly__Mr__Shankly.mp3', 'The_Boy_With_The_Thorn_In_His_Side.mp3', 'There_Is_A_Light_That_Never_Goes_Out.mp3', 'Vicar_In_A_Tutu.mp3', 'Cemetry_Gates.mp3', 'Bigmouth_Strikes_Again.mp3', 'The_Queen_Is_Dead__Take_Me_Back_To_Dear_Old_Blighty__Medley__.mp3', 'Some_Girls_Are_Bigger_Than_Others.mp3', 'I_Know_It_s_Over.mp3']))
+        print("Audio splitting test 5 (youtube title sanitization) passed.")
+
     def run_all_tests(self):
         self.test_search_album()
         self.test_download_album()
@@ -109,3 +116,4 @@ class Tests:
         self.test_split_audio_in_tracks__validate_based_on_tokens()
         self.test_split_audio_in_tracks__sanitize_dots()
         self.test_split_audio_in_tracks__sanitize_tracklength()
+        self.test_split_audio_in_tracks__sanitize_youtube_title()

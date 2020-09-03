@@ -16,7 +16,7 @@ class Controller:
         valid_results = []
 
         for result in results:
-            lowercase_result_title = result['title'].lower().replace("̲", "")
+            lowercase_result_title = result['title'].lower().replace("̲", "").replace("̶", "")
             if band_name in lowercase_result_title and album_name in lowercase_result_title and "full" in lowercase_result_title:
                 valid_results.append(result)
 
