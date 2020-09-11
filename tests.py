@@ -116,7 +116,33 @@ class Tests:
         os.chdir("../../")
         print("Automatic track tags test passed.")
 
+
+    def test_track_searching(self):
+        results = self.controller.search_track("Ahab", "Below The Sun")
+        assert(len(results) > 0 and "Below The Sun" in results[0]["title"])
+        print("Track searching test passed.")
+
+
+    def test_track_downloading(self):
+        self.controller.download_track("Ahab", "Below The Sun")
+        assert("Below_The_Sun.mp3" in os.listdir())
+        os.remove("Below_The_Sun.mp3")
+        print("Track downloading test passed.")
+
+
+    def test_track_downloading_into_directory(self):
+        self.controller.download_track_into_directory("Ahab", "The Call of the Wretched Sea", "Below The Sun")
+        assert("Below_The_Sun.mp3" in os.listdir("./downloads/Ahab_-_The_Call_of_the_Wretched_Sea"))
+        print("Track downloading in directory test passed.")
+
+
+    def test_separate_track_downloading(self):
+        self.controller.download_tracks_separately("Yes", "Yes")
+        print("Separate track downloading test passed.")
+
+
     def run_all_tests(self):
+        """
         self.test_search_album()
         self.test_download_album()
         self.test_create_search_query()
@@ -131,3 +157,8 @@ class Tests:
         self.test_split_audio_in_tracks__sanitize_tracklength()
         self.test_split_audio_in_tracks__sanitize_youtube_title()
         self.test_add_tags_to_track()
+        """
+        self.test_track_searching()
+        self.test_track_downloading()
+        self.test_track_downloading_into_directory()
+        #self.test_separate_track_downloading()

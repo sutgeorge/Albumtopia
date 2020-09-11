@@ -8,6 +8,8 @@ import re, os, eyed3, sys, urllib
 class Controller:
     def __init__(self):
         self.album_link = ""
+        self.new_directory_name = ""
+        self.path_to_image = ""
 
     def search_album(self, band_name, album_name):
         band_name, album_name = band_name.lower(), album_name.lower()
@@ -47,7 +49,7 @@ class Controller:
 
     def create_search_query(self, band_name, album_title):
         search_term = (band_name + " " + album_title).strip().lower()
-        search_term = re.sub(" \s+", " ", search_term).replace(" ", "+")
+        search_term = re.sub(r" \s+", " ", search_term).replace(" ", "+")
         request_url = "https://www.discogs.com/search/?q=" + search_term + "&type=all"
         return request_url
 
@@ -68,7 +70,7 @@ class Controller:
             tokens = album_title.strip().lower().split(" ")
             valid = True
             for token in tokens:
-                if token not in links[index].attrs["href"].lower() and token not in str(links[index]).lower():
+                if (token not in links[index].attrs["href"].lower() and token not in str(links[index]).lower()) or ("artist" in links[index].attrs["href"].lower()):
                     valid = False
                     break
 
@@ -117,13 +119,12 @@ class Controller:
                 break
 
         self.path_to_image = (os.getcwd() + "/" + band_name + album_title).replace(" ", "_")
-        if sys.version[0] == '2':
-            urllib.urlretrieve(image_link, self.path_to_image)
-        elif sys.version[0] == '3':
-            urllib.request.urlretrieve(image_link, self.path_to_image)
+        urllib.request.urlretrieve(image_link, self.path_to_image)
 
     def add_tags_to_track(self, path_to_track, band_name, album_title, song_title, track_num):
+        print(path_to_track)
         song = eyed3.load(path_to_track)
+        print(song)
         song.tag.artist = band_name
         song.tag.album = album_title
         song.tag.album_artist = band_name
@@ -174,7 +175,66 @@ class Controller:
 
                 song_title = self.sanitize_filename(song_titles[song_index])
                 os.system("ffmpeg -t {} -ss {} -i {} {} -hide_banner -loglevel panic".format(song_duration_in_seconds, start_time, filename, song_title))
+                print(song_title)
                 self.add_tags_to_track(song_title, band_name, album_title, song_titles[song_index], song_index + 1)
 
         os.remove(filename)
         os.chdir("../../")
+
+
+    def search_track(self, band_name, track_title):
+        band_name, track_title = band_name.lower(), track_title.lower()
+        search_string = band_name + " " + track_title 
+        results = YoutubeSearch(search_string, max_results=20).to_dict()
+        valid_results = []
+
+        for result in results:
+            lowercase_result_title = result['title'].lower().replace("̲", "").replace("̶", "")
+            if band_name in lowercase_result_title and track_title in lowercase_result_title:
+                valid_results.append(result)
+
+        return valid_results
+
+    def download_track(self, band_name, track_title):
+        results = self.search_track(band_name, track_title)
+        video_url = "https://www.youtube.com" + results[0]['url_suffix']
+        video_info = YoutubeDL().extract_info(url=video_url, download=False)
+        filename = (track_title + ".mp3").replace(" ", "_")
+        options = {
+            'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': filename,
+            'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}]}
+
+        with YoutubeDL(options) as ydl:
+            ydl.download([video_info['webpage_url']])
+
+
+    def download_track_into_directory(self, band_name, album_title, track_title):
+        if not os.path.exists("./downloads"):
+            os.mkdir("downloads")
+        os.chdir("./downloads")
+        self.new_directory_name = ("./" + band_name + " - " + album_title + "/").replace(" ", "_")
+        if not os.path.exists(self.new_directory_name):
+            os.mkdir(self.new_directory_name)
+        os.chdir(self.new_directory_name)
+        self.download_track(band_name, track_title)
+        os.chdir("../../")
+
+
+    def download_tracks_separately(self, band_name, album_title): 
+        album_links = self.get_album_links_from_discogs(band_name, album_title)
+        self.album_link = album_links[0]
+        (song_titles, song_durations) = self.get_album_tracklist(self.album_link)
+        track_index = 0
+        print(song_titles)
+        self.download_album_cover_art(band_name, album_title)
+
+        for song_title in song_titles:
+            track_index += 1
+            self.download_track_into_directory(band_name, album_title, song_title) 
+            song_filename = self.sanitize_filename(song_title)
+            """
+            path = ("./downloads/" + band_name + " - " + album_title + "/" + song_filename).replace(" ", "_")
+            print(path)
+            self.add_tags_to_track(path, band_name, album_title, song_title, track_index)
+            """
+
