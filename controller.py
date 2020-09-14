@@ -39,8 +39,8 @@ class Controller:
         with YoutubeDL(options) as ydl:
             ydl.download([video_info['webpage_url']])
 
-
-    def download_into_directory(self, band_name, album_title):
+    
+    def create_file_structure(self, band_name, album_title):
         if not os.path.exists("./downloads"):
             os.mkdir("downloads")
         os.chdir("./downloads")
@@ -48,6 +48,10 @@ class Controller:
         if not os.path.exists(self.new_directory_name):
             os.mkdir(self.new_directory_name)
         os.chdir(self.new_directory_name)
+
+
+    def download_into_directory(self, band_name, album_title):
+        self.create_file_structure(band_name, album_title)
         self.download_youtube_video(band_name, album_title)
         os.chdir("../../")
 
@@ -118,15 +122,6 @@ class Controller:
 
 
     def download_album_cover_art(self, band_name, album_title):
-        if not os.path.exists("./downloads"):
-            os.mkdir("downloads")
-        os.chdir("./downloads")
-
-        self.new_directory_name = ("./" + band_name + " - " + album_title + "/").replace(" ", "_")
-        if not os.path.exists(self.new_directory_name):
-            os.mkdir(self.new_directory_name)
-        os.chdir(self.new_directory_name)
-
         result = requests.get(self.album_link)
         page_source = result.content
         soup = BeautifulSoup(page_source, "lxml")
@@ -139,7 +134,6 @@ class Controller:
 
         self.path_to_image = (os.getcwd() + "/" + band_name + album_title).replace(" ", "_")
         urllib.request.urlretrieve(image_link, self.path_to_image)
-        os.chdir("../../")
 
 
     def add_tags_to_track(self, path_to_track, band_name, album_title, song_title, track_num):
@@ -230,13 +224,7 @@ class Controller:
 
 
     def download_track_into_directory(self, band_name, album_title, track_title):
-        if not os.path.exists("./downloads"):
-            os.mkdir("downloads")
-        os.chdir("./downloads")
-        self.new_directory_name = ("./" + band_name + " - " + album_title + "/").replace(" ", "_")
-        if not os.path.exists(self.new_directory_name):
-            os.mkdir(self.new_directory_name)
-        os.chdir(self.new_directory_name)
+        self.create_file_structure(band_name, album_title)
         self.download_track(band_name, track_title)
         os.chdir("../../")
 
@@ -246,7 +234,9 @@ class Controller:
         self.album_link = album_links[0]
         (song_titles, song_durations) = self.get_album_tracklist(self.album_link)
         track_index = 0
+        self.create_file_structure(band_name, album_title)
         self.download_album_cover_art(band_name, album_title)
+        os.chdir("../../")
 
         for song_title in song_titles:
             track_index += 1

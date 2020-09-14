@@ -73,7 +73,9 @@ class Tests:
 
     def test_split_audio_in_tracks__average_case(self):
         self.controller.split_audio_in_tracks("Pink Floyd", "Meddle")
-        assert(set(os.listdir("./downloads/Pink_Floyd_-_Meddle")) == set(['Seamus.mp3', 'A_Pillow_Of_Winds.mp3', 'San_Tropez.mp3', 'Fearless.mp3', 'Echoes.mp3', 'One_Of_These_Days.mp3']))
+        expected_result = set(['Seamus.mp3', 'A_Pillow_Of_Winds.mp3', 'San_Tropez.mp3', 'Fearless.mp3', 'Echoes.mp3', 'One_Of_These_Days.mp3']) 
+        actual_result = set(os.listdir("./downloads/Pink_Floyd_-_Meddle"))
+        assert(expected_result.issubset(actual_result))
         print("Audio splitting test (average case) passed.")
 
 
@@ -81,7 +83,9 @@ class Tests:
         shutil.rmtree("./downloads")
         os.mkdir("./downloads")
         self.controller.split_audio_in_tracks("Jethro Tull", "Aqualung")
-        assert(set(os.listdir("./downloads/Jethro_Tull_-_Aqualung")) == set(['Aqualung.mp3', 'Cross-Eyed_Mary.mp3', 'Cheap_Day_Return.mp3', 'Mother_Goose.mp3', "Wond_ring_Aloud.mp3", 'Up_To_Me.mp3', "My_God.mp3", "Hymn_43.mp3", "Slipstream.mp3", "Locomotive_Breath.mp3", "Wind-Up.mp3"]))
+        expected_result = set(['Aqualung.mp3', 'Cross-Eyed_Mary.mp3', 'Cheap_Day_Return.mp3', 'Mother_Goose.mp3', "Wond_ring_Aloud.mp3", 'Up_To_Me.mp3', "My_God.mp3", "Hymn_43.mp3", "Slipstream.mp3", "Locomotive_Breath.mp3", "Wind-Up.mp3"]) 
+        actual_result = set(os.listdir("./downloads/Jethro_Tull_-_Aqualung"))
+        assert(expected_result.issubset(actual_result))
         print("Audio splitting test (no song lengths in link) passed.")
 
 
@@ -89,7 +93,9 @@ class Tests:
         shutil.rmtree("./downloads")
         os.mkdir("./downloads")
         self.controller.split_audio_in_tracks("Drowning The Light", "Oceans Of Eternity")
-        assert(set(os.listdir("./downloads/Drowning_The_Light_-_Oceans_Of_Eternity")) == set(['Oceans_Of_Eternity.mp3', 'Oppression___Tyranny.mp3', 'The_Key_Still_Not_Found.mp3', 'As_The_Shadows_At_Dusk_Reach_Our_Enemies_Throats.mp3', 'The_Lunatic_Tide.mp3', 'The_Poison_Kiss.mp3', 'The_Runes_Are_Thrown___The_Bones_Are_Spread__A_Hymn_To_The_Apocalypse_.mp3', 'Drifting_Away_In_A_Sea_Of_Sorrow__Part_II_.mp3', 'The_Cataclysmic_Cycle_Of_Renewal.mp3']))
+        expected_result = set(['Oceans_Of_Eternity.mp3', 'Oppression___Tyranny.mp3', 'The_Key_Still_Not_Found.mp3', 'As_The_Shadows_At_Dusk_Reach_Our_Enemies_Throats.mp3', 'The_Lunatic_Tide.mp3', 'The_Poison_Kiss.mp3', 'The_Runes_Are_Thrown___The_Bones_Are_Spread__A_Hymn_To_The_Apocalypse_.mp3', 'Drifting_Away_In_A_Sea_Of_Sorrow__Part_II_.mp3', 'The_Cataclysmic_Cycle_Of_Renewal.mp3']) 
+        actual_result = set(os.listdir("./downloads/Drowning_The_Light_-_Oceans_Of_Eternity"))
+        assert(expected_result.issubset(actual_result))
         print("Audio splitting test 3 (token validation) passed.")
 
 
@@ -97,7 +103,9 @@ class Tests:
         shutil.rmtree("./downloads")
         os.mkdir("./downloads")
         self.controller.split_audio_in_tracks("Drowning The Light", "Catacombs Of Blood")
-        assert(set(os.listdir("./downloads/Drowning_The_Light_-_Catacombs_Of_Blood")) == set(['Autumn_Mourning.mp3', '___Such_Cruelty_Never_Rests.mp3', 'Eyes_Of_Onyx__Carrion_For_The_Worms_.mp3', 'As_Plague_Upon_The_Sheep__Poison_In_Redemption_.mp3', 'Entrance_To_Illumination.mp3', 'Fragmented___Unrealisable.mp3', 'This_Darkest_Hour.mp3', 'Requiem_Of_Honour___Glory.mp3', 'Pact_Of_The_Black_Templars.mp3', 'Burial_In_The_Rain.mp3', 'Torn_Away_By_The_Shadows.mp3']))
+        expected_result = set(['Autumn_Mourning.mp3', '___Such_Cruelty_Never_Rests.mp3', 'Eyes_Of_Onyx__Carrion_For_The_Worms_.mp3', 'As_Plague_Upon_The_Sheep__Poison_In_Redemption_.mp3', 'Entrance_To_Illumination.mp3', 'Fragmented___Unrealisable.mp3', 'This_Darkest_Hour.mp3', 'Requiem_Of_Honour___Glory.mp3', 'Pact_Of_The_Black_Templars.mp3', 'Burial_In_The_Rain.mp3', 'Torn_Away_By_The_Shadows.mp3'])
+        actual_result = set(os.listdir("./downloads/Drowning_The_Light_-_Catacombs_Of_Blood"))
+        assert(expected_result.issubset(actual_result))
         print("Audio splitting test 4 (filename sanitization) passed.")
 
 
@@ -105,7 +113,9 @@ class Tests:
         shutil.rmtree("./downloads")
         os.mkdir("./downloads")
         self.controller.split_audio_in_tracks("Yes", "Close To The Edge")
-        assert(set(os.listdir("./downloads/Yes_-_Close_To_The_Edge")) == set(['And_You_And_I.mp3', 'Close_To_The_Edge.mp3', 'Siberian_Khatru.mp3']))
+        expected_result = set(['And_You_And_I.mp3', 'Close_To_The_Edge.mp3', 'Siberian_Khatru.mp3'])
+        actual_result = set(os.listdir("./downloads/Yes_-_Close_To_The_Edge"))
+        assert(expected_result.issubset(actual_result))
         print("Audio splitting test 4 (tracklength sanitization) passed.")
 
 
@@ -113,7 +123,9 @@ class Tests:
         shutil.rmtree("./downloads")
         os.mkdir("./downloads")
         self.controller.split_audio_in_tracks("The Smiths", "The Queen Is Dead")
-        assert(set(os.listdir("./downloads/The_Smiths_-_The_Queen_Is_Dead")) == set(['Never_Had_No_One_Ever.mp3', 'Frankly__Mr__Shankly.mp3', 'The_Boy_With_The_Thorn_In_His_Side.mp3', 'There_Is_A_Light_That_Never_Goes_Out.mp3', 'Vicar_In_A_Tutu.mp3', 'Cemetry_Gates.mp3', 'Bigmouth_Strikes_Again.mp3', 'The_Queen_Is_Dead__Take_Me_Back_To_Dear_Old_Blighty__Medley__.mp3', 'Some_Girls_Are_Bigger_Than_Others.mp3', 'I_Know_It_s_Over.mp3']))
+        expected_result = set(['Never_Had_No_One_Ever.mp3', 'Frankly__Mr__Shankly.mp3', 'The_Boy_With_The_Thorn_In_His_Side.mp3', 'There_Is_A_Light_That_Never_Goes_Out.mp3', 'Vicar_In_A_Tutu.mp3', 'Cemetry_Gates.mp3', 'Bigmouth_Strikes_Again.mp3', 'The_Queen_Is_Dead__Take_Me_Back_To_Dear_Old_Blighty__Medley__.mp3', 'Some_Girls_Are_Bigger_Than_Others.mp3', 'I_Know_It_s_Over.mp3'])
+        actual_result = set(os.listdir("./downloads/The_Smiths_-_The_Queen_Is_Dead"))
+        assert(expected_result.issubset(actual_result))
         print("Audio splitting test 5 (youtube title sanitization) passed.")
         
 
@@ -135,7 +147,7 @@ class Tests:
         results = self.controller.search_track("Ahab", "Below The Sun")
         assert(len(results) > 0 and "Below The Sun" in results[0]["title"])
         print("Track searching test passed.")
-
+    
 
     def test_track_downloading(self):
         self.controller.download_track("Ahab", "Below The Sun")
