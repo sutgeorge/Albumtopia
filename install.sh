@@ -13,4 +13,6 @@ pip install eyeD3
 pip3 install eyeD3
 pip install pydub
 pip3 install pydub
+pip install unidecode
+pip3 install unidecode
 sudo apt install ffmpeg

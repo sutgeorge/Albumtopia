@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from youtube_search import YoutubeSearch
 from youtube_dl import YoutubeDL
 from pydub import AudioSegment
-import re, os, eyed3, sys, urllib
+import re, os, eyed3, sys, urllib, unidecode
 
 class Controller:
     def __init__(self):
@@ -206,6 +206,12 @@ class Controller:
             lowercase_result_title = result['title'].lower().replace("̲", "").replace("̶", "")
             if band_name in lowercase_result_title and track_title in lowercase_result_title:
                 valid_results.append(result)
+            else:
+                lowercase_result_title_without_accents = unidecode.unidecode(lowercase_result_title) 
+                band_name_without_accents = unidecode.unidecode(band_name) 
+                track_title_without_accents = unidecode.unidecode(track_title) 
+                if band_name_without_accents in lowercase_result_title_without_accents and track_title_without_accents in lowercase_result_title_without_accents:
+                    valid_results.append(result)
 
         return valid_results
 
