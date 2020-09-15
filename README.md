@@ -1,7 +1,7 @@
 # Albumtopia
-A simple Python program which downloads a full album from Youtube and scrapes album and track details from discogs.com to split the album in separate tracks with proper metadata (track title, album name, artist name, album cover etc.)
+A simple Python program which automatically downloads a full album from Youtube and scrapes album and track details from discogs.com to tag the tracks with proper metadata (track title, album name, artist name, album cover etc.) 
 
-## Features
+## Features to implement
 - [X] Add automatic Youtube download
 - [X] Extract song lengths from discogs.com
 - [X] Split mp3 album properly in separate tracks
