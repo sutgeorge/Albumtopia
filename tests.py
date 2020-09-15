@@ -172,6 +172,12 @@ class Tests:
         self.controller.download_tracks_separately("Megadeth", "Rust In Peace")
         assert(set(os.listdir("./downloads/Megadeth_-_Rust_In_Peace")) == set(['Rust_In_Peace___Polaris.mp3', 'Take_No_Prisoners.mp3', 'Poison_Was_The_Cure.mp3', 'Five_Magics.mp3', 'Hangar_18.mp3', 'Lucretia.mp3', 'MegadethRust_In_Peace', 'Holy_Wars___The_Punishment_Due.mp3', 'Dawn_Patrol.mp3', 'Tornado_Of_Souls.mp3']))
         print("Separate track downloading test 2 passed.")
+    
+
+    def test_separate_track_downloading_3__diacritics_and_long_mp3_handling(self):
+        self.controller.download_tracks_separately("Progresiv TM", "Puterea Muzicii")
+        assert(set(os.listdir("./downloads/Progresiv_TM_-_Puterea_Muzicii")) == set(['Pas_Candid_Către_Realitate.mp3', 'Opțiune_Pentru_Pace.mp3', 'Oameni_Și_Fapte.mp3', 'Puterea_Muzicii.mp3', 'Sete_De_Pădure.mp3', 'Progresiv_TMPuterea_Muzicii', 'Legămînt.mp3', 'Gînd_Curat.mp3']))
+        print("Separate track downloading test 3 passed.")
 
 
     def run_all_tests(self):
@@ -195,3 +201,4 @@ class Tests:
         self.test_track_downloading_into_directory()
         self.test_separate_track_downloading_1()
         self.test_separate_track_downloading_2()
+        self.test_separate_track_downloading_3__diacritics_and_long_mp3_handling()
