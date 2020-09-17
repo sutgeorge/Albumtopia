@@ -95,8 +95,9 @@ class Controller:
         tracklist_page = result.content
         soup = BeautifulSoup(tracklist_page, "lxml")
         tracklist_span_titles = soup.find_all("span", "tracklist_track_title")
+        tracklist_without_subtracks = list(filter((lambda x: "subtrack" not in x.parent.parent["class"]), tracklist_span_titles))
         tracklist_durations = soup.find_all("td", "tracklist_track_duration")
-        song_titles = list(map(lambda x: x.getText(), tracklist_span_titles))
+        song_titles = list(map(lambda x: x.getText(), tracklist_without_subtracks))
         song_durations = list(map(lambda x: x.find("span").getText(), tracklist_durations))
         return (song_titles, song_durations)
 
@@ -168,6 +169,7 @@ class Controller:
         while invalid_song_durations:
             album_link = album_links[0]
             (song_titles, song_durations) = self.get_album_tracklist(album_link)
+            song_durations = list(filter((lambda x: x != ''), song_durations))
             if self.check_tracklength_validity(song_durations) == False:
                 del album_links[0]
                 continue

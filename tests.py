@@ -57,6 +57,13 @@ class Tests:
         print("Album tracklist extraction test passed.")
 
 
+    def test_get_album_tracklist__subtrack_filtering(self):
+        links = self.controller.get_album_links_from_discogs("Edge Of Sanity", "Unorthodox")
+        (song_titles, song_durations) = self.controller.get_album_tracklist(links[0])
+        assert(song_titles == ['The Unorthodox', 'Enigma', 'Incipience To The Butchery', 'In The Veins/Darker Than Black', 'Everlasting (Epidemic Reign Part III)', 'After Afterlife', 'Beyond The Unknown', 'Nocturnal', 'A Curfew For The Damned (...Blind Belief)', 'Cold Sun (Epidemic Reign Part IV)', 'The Day Of Maturity', 'Requiscon By Page (Instrumental)', 'Dead But Dreaming', 'When All Is Said'])
+        print("Subtrack filtering test passed.")
+
+
     def test_download_into_directory(self):
         self.controller.download_into_directory("Warsaw", "Warsaw")
         os.chdir("./downloads")
@@ -181,17 +188,20 @@ class Tests:
 
 
     def run_all_tests(self):
+        """
         self.test_search_album()
         self.test_download_album()
         self.test_create_search_query()
         self.test_get_album_links_from_discogs()
         self.test_get_album_tracklist()
+        self.test_get_album_tracklist__subtrack_filtering()
         self.test_download_into_directory()
         self.test_string_timestamp_conversion_to_ints()
         self.test_split_audio_in_tracks__average_case()
         self.test_split_audio_in_tracks__no_song_lengths_in_the_first_link()
         self.test_split_audio_in_tracks__validate_based_on_tokens()
         self.test_split_audio_in_tracks__sanitize_dots()
+        """
         self.test_split_audio_in_tracks__sanitize_tracklength()
         self.test_split_audio_in_tracks__sanitize_youtube_title()
         self.test_add_tags_to_track()
