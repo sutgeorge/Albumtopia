@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from youtube_search import YoutubeSearch
 from youtube_dl import YoutubeDL
 from pydub import AudioSegment
+from difflib import SequenceMatcher
 import re, os, eyed3, sys, urllib, unidecode
 
 class Controller:
@@ -198,8 +199,20 @@ class Controller:
         os.chdir("../../")
 
 
+    def sanitize_string(self, string):
+        characters = ['(', ')', ',', ';', ':', '"', '\'', '&', '.', '/']
+        for char in characters:
+            if char in string:
+                string = string.replace(char, "")
+        return string
+
+
+    def get_string_similarity_percentage(self, string_a, string_b):
+        return SequenceMatcher(None, string_a, string_b).ratio() 
+
+
     def search_track(self, band_name, track_title):
-        band_name, track_title = band_name.lower(), track_title.lower()
+        band_name, track_title = band_name.lower(), self.sanitize_string(track_title.lower())
         search_string = band_name + " " + track_title 
         results = YoutubeSearch(search_string, max_results=20).to_dict()
         valid_results = []
@@ -207,7 +220,11 @@ class Controller:
         for result in results:
             channel_name = result["channel"].lower()
             lowercase_result_title = result['title'].lower().replace("̲", "").replace("̶", "")
-            if (band_name in lowercase_result_title or band_name in channel_name) and track_title in lowercase_result_title and "full" not in lowercase_result_title:
+            lowercase_result_title = self.sanitize_string(lowercase_result_title)
+
+            if (band_name in lowercase_result_title or band_name in channel_name) and \
+                (track_title in lowercase_result_title or self.get_string_similarity_percentage(track_title, lowercase_result_title) >= 0.5)\
+                and "full" not in lowercase_result_title:
                 valid_results.append(result)
             else:
                 lowercase_result_title_without_accents = unidecode.unidecode(lowercase_result_title) 
@@ -215,7 +232,8 @@ class Controller:
                 track_title_without_accents = unidecode.unidecode(track_title) 
                 channel_name_without_accents = unidecode.unidecode(channel_name)
                 if (band_name_without_accents in lowercase_result_title_without_accents or band_name_without_accents in channel_name_without_accents)\
-                and track_title_without_accents in lowercase_result_title_without_accents and "full" not in lowercase_result_title:
+                    and (track_title_without_accents in lowercase_result_title_without_accents or self.get_string_similarity_percentage(track_title, lowercase_result_title) >= 0.9)\
+                    and "full" not in lowercase_result_title:
                     valid_results.append(result)
 
         return valid_results
@@ -239,7 +257,7 @@ class Controller:
         self.download_track(band_name, track_title)
         os.chdir("../../")
 
-
+    
     def download_tracks_separately(self, band_name, album_title): 
         album_links = self.get_album_links_from_discogs(band_name, album_title)
         self.album_link = album_links[0]

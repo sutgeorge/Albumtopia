@@ -186,9 +186,16 @@ class Tests:
         assert(set(os.listdir("./downloads/Progresiv_TM_-_Puterea_Muzicii")) == set(['Pas_Candid_Către_Realitate.mp3', 'Opțiune_Pentru_Pace.mp3', 'Oameni_Și_Fapte.mp3', 'Puterea_Muzicii.mp3', 'Sete_De_Pădure.mp3', 'Progresiv_TMPuterea_Muzicii', 'Legămînt.mp3', 'Gînd_Curat.mp3']))
         print("Separate track downloading test 3 passed.")
 
+    
+    def test_separate_track_downloading_4__string_similarity_last_case(self):
+        self.controller.download_tracks_separately("Edge Of Sanity", "Unorthodox")
+        expected_result = set(['The_Day_Of_Maturity.mp3', 'Requiscon_By_Page__Instrumental_.mp3', 'Cold_Sun__Epidemic_Reign_Part_IV_.mp3', 'Enigma.mp3', 'The_Unorthodox.mp3', 'Nocturnal.mp3', 'After_Afterlife.mp3', 'Beyond_The_Unknown.mp3', 'When_All_Is_Said.mp3', 'Dead_But_Dreaming.mp3', 'Edge_Of_SanityUnorthodox', 'Incipience_To_The_Butchery.mp3', 'Everlasting__Epidemic_Reign_Part_III_.mp3', 'A_Curfew_For_The_Damned_____Blind_Belief_.mp3', 'In_The_Veins_Darker_Than_Black.mp3'])
+        actual_result = set(os.listdir("./downloads/Edge_Of_Sanity_-_Unorthodox"))
+        assert(actual_result.issubset(expected_result))
+        print("Separate track downloading test (string similarity) passed.")
+
 
     def run_all_tests(self):
-        """
         self.test_search_album()
         self.test_download_album()
         self.test_create_search_query()
@@ -201,7 +208,6 @@ class Tests:
         self.test_split_audio_in_tracks__no_song_lengths_in_the_first_link()
         self.test_split_audio_in_tracks__validate_based_on_tokens()
         self.test_split_audio_in_tracks__sanitize_dots()
-        """
         self.test_split_audio_in_tracks__sanitize_tracklength()
         self.test_split_audio_in_tracks__sanitize_youtube_title()
         self.test_add_tags_to_track()
@@ -212,3 +218,4 @@ class Tests:
         self.test_separate_track_downloading_1()
         self.test_separate_track_downloading_2()
         self.test_separate_track_downloading_3__diacritics_and_long_mp3_handling()
+        self.test_separate_track_downloading_4__string_similarity_last_case()
