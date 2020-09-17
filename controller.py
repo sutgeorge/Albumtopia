@@ -203,14 +203,17 @@ class Controller:
         valid_results = []
 
         for result in results:
+            channel_name = result["channel"].lower()
             lowercase_result_title = result['title'].lower().replace("̲", "").replace("̶", "")
-            if band_name in lowercase_result_title and track_title in lowercase_result_title and "full" not in lowercase_result_title:
+            if (band_name in lowercase_result_title or band_name in channel_name) and track_title in lowercase_result_title and "full" not in lowercase_result_title:
                 valid_results.append(result)
             else:
                 lowercase_result_title_without_accents = unidecode.unidecode(lowercase_result_title) 
                 band_name_without_accents = unidecode.unidecode(band_name) 
                 track_title_without_accents = unidecode.unidecode(track_title) 
-                if band_name_without_accents in lowercase_result_title_without_accents and track_title_without_accents in lowercase_result_title_without_accents and "full" not in lowercase_result_title:
+                channel_name_without_accents = unidecode.unidecode(channel_name)
+                if (band_name_without_accents in lowercase_result_title_without_accents or band_name_without_accents in channel_name_without_accents)\
+                and track_title_without_accents in lowercase_result_title_without_accents and "full" not in lowercase_result_title:
                     valid_results.append(result)
 
         return valid_results
@@ -245,6 +248,7 @@ class Controller:
         os.chdir("../../")
 
         for song_title in song_titles:
+            song_title = song_title.replace("\"", "")
             track_index += 1
             self.download_track_into_directory(band_name, album_title, song_title) 
             filename = self.sanitize_filename(song_title)
