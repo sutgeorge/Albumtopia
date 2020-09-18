@@ -195,6 +195,13 @@ class Tests:
         print("Separate track downloading test (string similarity) passed.")
 
 
+    def test_get_album_links_from_discogs__ignore_record_label_links(self):
+        links = self.controller.get_album_links_from_discogs("Epitaph", "Epitaph")
+        correct_link = links[0] 
+        assert(correct_link == "https://www.discogs.com/Epitaph-Epitaph/master/277822")
+        print("Ignoring record label links test passed.")
+
+
     def run_all_tests(self):
         self.test_search_album()
         self.test_download_album()
@@ -219,3 +226,4 @@ class Tests:
         self.test_separate_track_downloading_2()
         self.test_separate_track_downloading_3__diacritics_and_long_mp3_handling()
         self.test_separate_track_downloading_4__string_similarity_last_case()
+        self.test_get_album_links_from_discogs__ignore_record_label_links()

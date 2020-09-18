@@ -73,15 +73,16 @@ class Controller:
         soup = BeautifulSoup(page_source, "lxml")
         links = soup.find_all("a", "search_result_title")
         if len(links) == 0:
-            print("No search found!")
+            print("No search found on Discogs! Unfortunately, the album cannot be tagged.")
             return 404
 
         valid_links = []
         for index in range(0, len(links)):
             tokens = album_title.strip().lower().split(" ")
             valid = True
+            link = links[index].attrs["href"].lower()
             for token in tokens:
-                if (token not in links[index].attrs["href"].lower() and token not in str(links[index]).lower()) or ("artist" in links[index].attrs["href"].lower()):
+                if (token not in link and token not in str(links[index]).lower()) or ("artist" in link) or ("label" in link):
                     valid = False
                     break
 
@@ -167,6 +168,9 @@ class Controller:
         invalid_song_durations = True
         album_links = self.get_album_links_from_discogs(band_name, album_title)
 
+        if album_links == 404:
+            return
+
         while invalid_song_durations:
             album_link = album_links[0]
             (song_titles, song_durations) = self.get_album_tracklist(album_link)
@@ -240,26 +244,36 @@ class Controller:
 
 
     def download_track(self, band_name, track_title):
-        results = self.search_track(band_name, track_title)
-        filename = self.sanitize_filename(track_title)
-        video_url = "https://www.youtube.com" + results[0]['url_suffix']
-        video_info = YoutubeDL().extract_info(url=video_url, download=False)
-        options = {
-            'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': filename,
-            'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}]}
+        try:
+            results = self.search_track(band_name, track_title)
+            filename = self.sanitize_filename(track_title)
+            video_url = "https://www.youtube.com" + results[0]['url_suffix']
+            video_info = YoutubeDL().extract_info(url=video_url, download=False)
+            options = {
+                'format': 'bestaudio/best', 'keepvideo': False, 'outtmpl': filename,
+                'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}]}
 
-        with YoutubeDL(options) as ydl:
-            ydl.download([video_info['webpage_url']])
+            with YoutubeDL(options) as ydl:
+                ydl.download([video_info['webpage_url']])
+            
+            return True
+        except Exception as e:
+            print("ERROR: Couldn't download \"{}\". The song was most likely not found on Youtube.".format(track_title))
+            print(e)
+            return False
 
 
     def download_track_into_directory(self, band_name, album_title, track_title):
         self.create_file_structure(band_name, album_title)
-        self.download_track(band_name, track_title)
+        successful = self.download_track(band_name, track_title)
         os.chdir("../../")
+        return successful
 
     
     def download_tracks_separately(self, band_name, album_title): 
         album_links = self.get_album_links_from_discogs(band_name, album_title)
+        if album_links == 404:
+            return
         self.album_link = album_links[0]
         (song_titles, song_durations) = self.get_album_tracklist(self.album_link)
         track_index = 0
@@ -270,7 +284,9 @@ class Controller:
         for song_title in song_titles:
             song_title = song_title.replace("\"", "")
             track_index += 1
-            self.download_track_into_directory(band_name, album_title, song_title) 
+            successful = self.download_track_into_directory(band_name, album_title, song_title) 
+            if not successful:
+                continue
             filename = self.sanitize_filename(song_title)
             path = (os.getcwd() + "/downloads/" + band_name + " - " + album_title + "/" + filename).replace(" ", "_")
             
