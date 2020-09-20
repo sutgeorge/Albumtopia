@@ -228,7 +228,7 @@ class Controller:
 
             if (band_name in lowercase_result_title or band_name in channel_name) and \
                 (track_title in lowercase_result_title or self.get_string_similarity_percentage(track_title, lowercase_result_title) >= 0.5)\
-                and "full" not in lowercase_result_title:
+                and "full" not in lowercase_result_title and "album" not in lowercase_result_title:
                 valid_results.append(result)
             else:
                 lowercase_result_title_without_accents = unidecode.unidecode(lowercase_result_title) 
